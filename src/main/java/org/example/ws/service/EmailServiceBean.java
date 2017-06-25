@@ -1,13 +1,13 @@
 package org.example.ws.service;
 
-import java.util.concurrent.Future;
-
 import org.example.ws.model.Greeting;
 import org.example.ws.util.AsyncResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Future;
 
 /**
  * The EmailServiceBean implements all business behaviors defined by the
@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceBean implements EmailService {
 
-    /**
-     * The Logger for this class.
-     */
+    /** The Logger for this class.  */
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override

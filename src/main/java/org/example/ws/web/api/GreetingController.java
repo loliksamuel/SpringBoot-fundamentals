@@ -1,8 +1,5 @@
 package org.example.ws.web.api;
 
-import java.util.Collection;
-import java.util.concurrent.Future;
-
 import org.example.ws.model.Greeting;
 import org.example.ws.service.EmailService;
 import org.example.ws.service.GreetingService;
@@ -10,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.concurrent.Future;
 
 /**
  * The GreetingController class is a RESTful web service controller. The
@@ -141,13 +136,11 @@ public class GreetingController extends BaseController {
      *         successfully, and a HTTP status code as described in the method
      *         comment.
      */
-    @RequestMapping(
-            value = "/api/greetings/{id}",
-            method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Greeting> updateGreeting(
-            @RequestBody Greeting greeting) {
+    @RequestMapping(value = "/api/greetings/{id}",
+                    method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_VALUE,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Greeting> updateGreeting(@RequestBody Greeting greeting) {
         logger.info("> updateGreeting id:{}", greeting.getId());
 
         Greeting updatedGreeting = greetingService.update(greeting);
@@ -176,11 +169,8 @@ public class GreetingController extends BaseController {
      * @return A ResponseEntity with an empty response body and a HTTP status
      *         code as described in the method comment.
      */
-    @RequestMapping(
-            value = "/api/greetings/{id}",
-            method = RequestMethod.DELETE)
-    public ResponseEntity<Greeting> deleteGreeting(
-            @PathVariable("id") Long id) {
+    @RequestMapping(value = "/api/greetings/{id}",method = RequestMethod.DELETE)
+    public ResponseEntity<Greeting> deleteGreeting(@PathVariable("id") Long id) {
         logger.info("> deleteGreeting id:{}", id);
 
         greetingService.delete(id);
@@ -189,15 +179,15 @@ public class GreetingController extends BaseController {
         return new ResponseEntity<Greeting>(HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Web service endpoint to fetch a single Greeting entity by primary key
+    /**  Web service endpoint to fetch a single Greeting entity by primary key
      * identifier and send it as an email.
+     * use basic auth:
+     * security.user.name=leanstacks
+     * security.user.password=s3cur!T
      * 
-     * If found, the Greeting is returned as JSON with HTTP status 200 and sent
-     * via Email.
+     * If found, the Greeting is returned as JSON with HTTP status 200 and sent via Email.
      * 
-     * If not found, the service returns an empty response body with HTTP status
-     * 404.
+     * If not found, the service returns an empty response body with HTTP status  404.
      * 
      * @param id A Long URL path variable containing the Greeting primary key
      *        identifier.
@@ -206,14 +196,11 @@ public class GreetingController extends BaseController {
      * @return A ResponseEntity containing a single Greeting object, if found,
      *         and a HTTP status code as described in the method comment.
      */
-    @RequestMapping(
-            value = "/api/greetings/{id}/send",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value    = "/api/greetings/{id}/send",
+                    method   = RequestMethod.POST,
+                    produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Greeting> sendGreeting(@PathVariable("id") Long id,
-            @RequestParam(
-                    value = "wait",
-                    defaultValue = "false") boolean waitForAsyncResult) {
+                                                 @RequestParam(value = "wait",defaultValue = "false") boolean waitForAsyncResult) {
 
         logger.info("> sendGreeting id:{}", id);
 
@@ -227,8 +214,7 @@ public class GreetingController extends BaseController {
             }
 
             if (waitForAsyncResult) {
-                Future<Boolean> asyncResponse = emailService
-                        .sendAsyncWithResult(greeting);
+                Future<Boolean> asyncResponse = emailService.sendAsyncWithResult(greeting);
                 boolean emailSent = asyncResponse.get();
                 logger.info("- greeting email sent? {}", emailSent);
             } else {
